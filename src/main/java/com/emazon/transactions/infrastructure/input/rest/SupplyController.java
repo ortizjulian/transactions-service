@@ -2,6 +2,7 @@ package com.emazon.transactions.infrastructure.input.rest;
 
 import com.emazon.transactions.application.dto.SupplyRequestDto;
 import com.emazon.transactions.application.handler.ISupplyHandler;
+import com.emazon.transactions.infrastructure.output.security.entity.SecurityUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -9,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +37,12 @@ public class SupplyController {
     })
     @PostMapping
     public ResponseEntity<Void> addQuantity(@Valid @RequestBody SupplyRequestDto supplyRequestDto) {
-        supplyHandler.addStockToArticle(supplyRequestDto);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityUser userDetails = (SecurityUser) authentication.getPrincipal();
+        Long userId = userDetails.getId();
+
+        supplyHandler.addStockToArticle(supplyRequestDto,userId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

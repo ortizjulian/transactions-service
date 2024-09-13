@@ -17,7 +17,6 @@ public class SupplyUseCase implements ISupplyServicePort {
     @Override
     public void addSupply(Supply supply) {
         supply.setTransactionDate(LocalDateTime.now());
-        supply.setPerformedByUserId(1L);
         supplyPersistencePort.saveSupply(supply);
     }
 }
