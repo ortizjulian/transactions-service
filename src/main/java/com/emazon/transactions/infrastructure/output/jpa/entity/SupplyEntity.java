@@ -24,7 +24,7 @@ public class SupplyEntity {
     private Long articleId;
 
     @Column(nullable = false)
-    private Long quantity;
+    private Integer quantity;
 
     @Column(nullable = false)
     private Long performedByUserId;

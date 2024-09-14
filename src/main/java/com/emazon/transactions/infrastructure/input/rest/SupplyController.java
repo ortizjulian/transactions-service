@@ -3,6 +3,7 @@ package com.emazon.transactions.infrastructure.input.rest;
 import com.emazon.transactions.application.dto.SupplyRequestDto;
 import com.emazon.transactions.application.handler.ISupplyHandler;
 import com.emazon.transactions.infrastructure.output.security.entity.SecurityUser;
+import com.emazon.transactions.utils.SecurityConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("supply")
@@ -36,13 +34,14 @@ public class SupplyController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<Void> addQuantity(@Valid @RequestBody SupplyRequestDto supplyRequestDto) {
+    public ResponseEntity<Void> addQuantity(@Valid @RequestBody SupplyRequestDto supplyRequestDto,
+                                            @RequestHeader(SecurityConstants.AUTHORIZATION) String token) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityUser userDetails = (SecurityUser) authentication.getPrincipal();
         Long userId = userDetails.getId();
 
-        supplyHandler.addStockToArticle(supplyRequestDto,userId);
+        supplyHandler.addStockToArticle(supplyRequestDto,userId , token);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

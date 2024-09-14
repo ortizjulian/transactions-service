@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 public class Supply {
     private LocalDateTime transactionDate;
     private Long articleId;
-    private Long quantity;
+    private Integer quantity;
     private Long performedByUserId;
 
-    public Supply(LocalDateTime transactionDate, Long articleId, Long quantity, Long performedByUserId) {
+    public Supply(LocalDateTime transactionDate, Long articleId, Integer quantity, Long performedByUserId) {
         this.transactionDate = transactionDate;
         this.articleId = articleId;
         this.quantity = quantity;
@@ -31,11 +31,11 @@ public class Supply {
         this.articleId = articleId;
     }
 
-    public Long getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Long quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 

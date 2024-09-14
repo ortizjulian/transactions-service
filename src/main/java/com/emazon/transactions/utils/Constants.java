@@ -13,5 +13,4 @@ public class Constants {
     public static final String EXCEPTION_ARTICLE_ID_POSITIVE = "Article ID must be a positive number";
     public static final String EXCEPTION_ARTICLE_QUANTITY_NULL = "Quantity cannot be null";
     public static final String EXCEPTION_ARTICLE_QUANTITY_POSITIVE = "Quantity must be a positive number";
-
 }
