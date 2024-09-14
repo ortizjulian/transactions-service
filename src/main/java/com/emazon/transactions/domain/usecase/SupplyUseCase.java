@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 
 public class SupplyUseCase implements ISupplyServicePort {
 
-    private final ISupplyPersistencePort supplyPersistencePort;
-    private final IArticlePersistencePort articlePersistencePort;
-    private final ISecurityPersistencePort securityPersistencePort;
+    private ISupplyPersistencePort supplyPersistencePort;
+    private IArticlePersistencePort articlePersistencePort;
+    private ISecurityPersistencePort securityPersistencePort;
 
     public SupplyUseCase(ISupplyPersistencePort supplyPersistencePort, IArticlePersistencePort articlePersistencePort, ISecurityPersistencePort securityPersistencePort) {
         this.supplyPersistencePort = supplyPersistencePort;
@@ -50,6 +50,5 @@ public class SupplyUseCase implements ISupplyServicePort {
             securityPersistencePort.removeToken();
             throw e;
         }
-
     }
 }

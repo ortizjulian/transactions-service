@@ -1,11 +1,16 @@
 package com.emazon.transactions.infrastructure.output.feign.utils;
 
 import com.emazon.transactions.domain.model.StatusCodeEnum;
+import com.emazon.transactions.utils.Constants;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 public class FeignExceptionHandler {
+
+    private FeignExceptionHandler() {
+        throw new UnsupportedOperationException(Constants.UTILITY_CLASS_SHOULD_NOT_BE_INSTANTIATED);
+    }
 
     public static StatusCodeEnum handleFeignException(FeignException e) {
         HttpStatusCode status = HttpStatusCode.valueOf(e.status());

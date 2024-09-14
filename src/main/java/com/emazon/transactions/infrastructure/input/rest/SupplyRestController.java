@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("supply")
 @RequiredArgsConstructor
 @Validated
-public class SupplyController {
+public class SupplyRestController {
 
     private final ISupplyHandler supplyHandler;
 
@@ -30,6 +30,7 @@ public class SupplyController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Stock added successfully"),
+            @ApiResponse(responseCode = "404", description = "Not article found with given id"),
             @ApiResponse(responseCode = "400", description = "Invalid request data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
