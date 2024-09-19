@@ -17,9 +17,9 @@ public class SupplyHandler implements ISupplyHandler {
     private final SupplyDtoMapper supplyDtoMapper;
 
     @Override
-    public void addStockToArticle(SupplyRequestDto supplyRequestDto, Long userId, String token) {
+    public void addStockToArticle(SupplyRequestDto supplyRequestDto, Long userId) {
         Supply supply =supplyDtoMapper.toSupply(supplyRequestDto);
         supply.setPerformedByUserId(userId);
-        supplyServicePort.addSupply(supply,token);
+        supplyServicePort.addSupply(supply);
     }
 }
