@@ -1,7 +1,8 @@
 package com.emazon.transactions.infrastructure.exceptionhandler;
 
-import com.emazon.transactions.domain.exceptions.ArticleNotFoundException;
-import com.emazon.transactions.domain.exceptions.FeignClientUnexpectedResponseException;
+import com.emazon.transactions.infrastructure.output.feign.exceptions.BadRequestException;
+import com.emazon.transactions.infrastructure.output.feign.exceptions.InternalServerErrorException;
+import com.emazon.transactions.infrastructure.output.feign.exceptions.NotFoundException;
 import com.emazon.transactions.utils.Constants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,17 +31,25 @@ public class ControllerAdvisor {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ArticleNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleArticleNotFoundException(
-            ArticleNotFoundException articleNotFoundException) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap(MESSAGE, articleNotFoundException.getMessage()));
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Map<String, String>> handleBadRequestException(
+            BadRequestException badRequestException) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Collections.singletonMap(MESSAGE, badRequestException.getMessage()));
     }
 
-    @ExceptionHandler(FeignClientUnexpectedResponseException.class)
-    public ResponseEntity<Map<String, String>> handleFeignUnexpectedResponseException(
-            FeignClientUnexpectedResponseException feignClientUnexpectedResponseException) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Collections.singletonMap(MESSAGE, feignClientUnexpectedResponseException.getMessage()));
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleNotFoundException(
+            NotFoundException notFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap(MESSAGE, notFoundException.getMessage()));
     }
+
+    @ExceptionHandler(InternalServerErrorException.class)
+    public ResponseEntity<Map<String, String>> handleInternalServerException(
+            InternalServerErrorException internalServerErrorException) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap(MESSAGE, internalServerErrorException.getMessage()));
+    }
+
 }
