@@ -2,6 +2,7 @@ package com.emazon.transactions.infrastructure.input.rest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import com.emazon.transactions.application.dto.SupplyRequestDto;
+import com.emazon.transactions.application.handler.ISecurityHandler;
 import com.emazon.transactions.application.handler.ISupplyHandler;
 import com.emazon.transactions.configuration.TestSecurityConfig;
 import com.emazon.transactions.infrastructure.output.security.jwt.JwtTokenManager;
@@ -31,6 +32,9 @@ class SupplyControllerTest {
 
     @MockBean
     private ISupplyHandler supplyHandler;
+
+    @MockBean
+    private ISecurityHandler securityHandler;
 
     @MockBean
     private JwtTokenManager jwtTokenManager;

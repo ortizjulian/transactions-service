@@ -1,5 +1,6 @@
 package com.emazon.transactions.infrastructure.exceptionhandler;
 
+import com.emazon.transactions.domain.exceptions.UnKnownNextSupplyDateException;
 import com.emazon.transactions.infrastructure.output.feign.exceptions.BadRequestException;
 import com.emazon.transactions.infrastructure.output.feign.exceptions.InternalServerErrorException;
 import com.emazon.transactions.infrastructure.output.feign.exceptions.NotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.net.ConnectException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +31,13 @@ public class ControllerAdvisor {
             errors.put(fieldName, errorMessage);
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UnKnownNextSupplyDateException.class)
+    public ResponseEntity<Map<String, String>> notKnowNextSupplyDateException(
+            UnKnownNextSupplyDateException notKnowNextSupplyDateException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap(MESSAGE, notKnowNextSupplyDateException.getMessage()));
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -50,6 +59,13 @@ public class ControllerAdvisor {
             InternalServerErrorException internalServerErrorException) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Collections.singletonMap(MESSAGE, internalServerErrorException.getMessage()));
+    }
+
+    @ExceptionHandler(ConnectException.class)
+    public ResponseEntity<Map<String, String>> handleConnectException(
+            ConnectException connectExceptionException) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap(MESSAGE,ExceptionResponse.SERVICE_UNAVAILABLE.getMessage()));
     }
 
 }

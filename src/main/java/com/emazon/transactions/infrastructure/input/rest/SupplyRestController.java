@@ -1,7 +1,9 @@
 package com.emazon.transactions.infrastructure.input.rest;
 
 import com.emazon.transactions.application.dto.SupplyRequestDto;
+import com.emazon.transactions.application.handler.ISecurityHandler;
 import com.emazon.transactions.application.handler.ISupplyHandler;
+
 import com.emazon.transactions.infrastructure.output.security.entity.SecurityUser;
 import com.emazon.transactions.utils.SecurityConstants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("supply")
 @RequiredArgsConstructor
@@ -23,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class SupplyRestController {
 
     private final ISupplyHandler supplyHandler;
-
+    private final ISecurityHandler securityHandler;
     @Operation(
             summary = "Add stock to an article",
             description = "This endpoint adds a specified quantity to an article in the stock service and creates a supply record for its history."
@@ -37,13 +41,28 @@ public class SupplyRestController {
     @PostMapping
     public ResponseEntity<Void> addQuantity(@Valid @RequestBody SupplyRequestDto supplyRequestDto,
                                             @RequestHeader(SecurityConstants.AUTHORIZATION) String token) {
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            SecurityUser userDetails = (SecurityUser) authentication.getPrincipal();
+            Long userId = userDetails.getId();
+            securityHandler.setToken(token);
+            supplyHandler.addStockToArticle(supplyRequestDto,userId);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityUser userDetails = (SecurityUser) authentication.getPrincipal();
-        Long userId = userDetails.getId();
-
-        supplyHandler.addStockToArticle(supplyRequestDto,userId , token);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } finally {
+            securityHandler.removeToken();
+        }
     }
 
+    @Operation(summary = "Get Next Supply Date", description = "Retrieve the next supply date for a specific article based on its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Next supply date retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Unknown next supply date for the given ID"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/next/{articleId}")
+    public ResponseEntity<LocalDateTime> nextSupplyDate(@PathVariable Long articleId) {
+        LocalDateTime nextSupplyDate = supplyHandler.nextSupplyDate(articleId);
+        return ResponseEntity.ok(nextSupplyDate);
+    }
 }
