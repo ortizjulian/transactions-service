@@ -10,6 +10,10 @@ public class Constants {
     public static final String MAPPER_SPRING = "spring";
     public static final String RESPONSE_MESSAGE_KEY = "Message";
 
+    public static final Long ONE_MONTH = 1L;
+
+    public static final String EXCEPTION_SERVICE_UNAVAILABLE = "The service is currently unavailable. Please try again later.";
+    public static final String EXCEPTION_NOT_KNOW_NEXT_SUPPLY = "UnKnown supply date for article ID: ";
     public static final String EXCEPTION_ARTICLE_ID_NULL = "Article ID cannot be null";
     public static final String EXCEPTION_ARTICLE_ID_POSITIVE = "Article ID must be a positive number";
     public static final String EXCEPTION_ARTICLE_QUANTITY_NULL = "Quantity cannot be null";

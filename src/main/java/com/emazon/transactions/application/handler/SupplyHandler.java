@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -21,5 +23,10 @@ public class SupplyHandler implements ISupplyHandler {
         Supply supply =supplyDtoMapper.toSupply(supplyRequestDto);
         supply.setPerformedByUserId(userId);
         supplyServicePort.addSupply(supply);
+    }
+
+    @Override
+    public LocalDateTime nextSupplyDate(Long articleId) {
+        return supplyServicePort.nextSupplyDate(articleId);
     }
 }

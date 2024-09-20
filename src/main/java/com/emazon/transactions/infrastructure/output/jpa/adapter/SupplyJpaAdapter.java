@@ -7,6 +7,9 @@ import com.emazon.transactions.infrastructure.output.jpa.mapper.SupplyEntityMapp
 import com.emazon.transactions.infrastructure.output.jpa.repository.ISupplyRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 public class SupplyJpaAdapter implements ISupplyPersistencePort {
 
@@ -17,5 +20,10 @@ public class SupplyJpaAdapter implements ISupplyPersistencePort {
     public void saveSupply(Supply supply) {
         SupplyEntity supplyEntity = supplyEntityMapper.toEntity(supply);
         supplyRepository.save(supplyEntity);
+    }
+
+    @Override
+    public Optional<LocalDateTime> findLastSupplyDateByArticleId(Long articleId) {
+        return supplyRepository.findLastSupplyDateByArticleId(articleId);
     }
 }

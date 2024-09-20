@@ -18,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("supply")
 @RequiredArgsConstructor
@@ -52,4 +54,15 @@ public class SupplyRestController {
         }
     }
 
+    @Operation(summary = "Get Next Supply Date", description = "Retrieve the next supply date for a specific article based on its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Next supply date retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Unknown next supply date for the given ID"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/next/{articleId}")
+    public ResponseEntity<LocalDateTime> nextSupplyDate(@PathVariable Long articleId) {
+        LocalDateTime nextSupplyDate = supplyHandler.nextSupplyDate(articleId);
+        return ResponseEntity.ok(nextSupplyDate);
+    }
 }
