@@ -7,6 +7,7 @@ import com.emazon.transactions.domain.model.ArticleQuantity;
 import com.emazon.transactions.domain.model.Sale;
 import com.emazon.transactions.domain.model.SaleItem;
 import com.emazon.transactions.domain.spi.IArticlePersistencePort;
+import com.emazon.transactions.domain.spi.ICartPersistencePort;
 import com.emazon.transactions.domain.spi.ISalePersistencePort;
 import com.emazon.transactions.utils.Constants;
 
@@ -18,10 +19,11 @@ public class SaleUseCase implements ISaleServicePort {
 
     private IArticlePersistencePort articlePersistencePort;
     private ISalePersistencePort salePersistencePort;
-
-    public SaleUseCase(IArticlePersistencePort articlePersistencePort, ISalePersistencePort salePersistencePort) {
+    private ICartPersistencePort cartPersistencePort;
+    public SaleUseCase(IArticlePersistencePort articlePersistencePort, ISalePersistencePort salePersistencePort,ICartPersistencePort cartPersistencePort) {
         this.articlePersistencePort = articlePersistencePort;
         this.salePersistencePort = salePersistencePort;
+        this.cartPersistencePort = cartPersistencePort;
     }
 
 
@@ -38,9 +40,12 @@ public class SaleUseCase implements ISaleServicePort {
             }
 
             updateSaleStatus(createdSale, Constants.SALE_STATUS_COMPLETED);
+            deleteArticlesFromCart(articleQuantityList);
 
         } catch (Exception e) {
+            updateSaleStatus(createdSale, Constants.SALE_STATUS_FAILED);
             restoreStock(quantitiesToRestore);
+            throw e;
         }
     }
 
@@ -72,6 +77,13 @@ public class SaleUseCase implements ISaleServicePort {
             throw new SaleCreationException(Constants.EXCEPTION_OUT_OF_STOCK + outOfStockArticleIds);
         }
         return createdSale;
+    }
+
+    private void deleteArticlesFromCart(List<ArticleQuantity> articleQuantityList) {
+        for (ArticleQuantity articleQuantity : articleQuantityList) {
+            Long articleId = articleQuantity.getArticleId();
+            cartPersistencePort.removeArticleFromCart(articleId);
+        }
     }
 
     private void updateSaleStatus(Sale createdSale, String status) {

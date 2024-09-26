@@ -4,15 +4,14 @@ package com.emazon.transactions.infrastructure.configuration;
 import com.emazon.transactions.domain.api.ISaleServicePort;
 import com.emazon.transactions.domain.api.ISecurityServicePort;
 import com.emazon.transactions.domain.api.ISupplyServicePort;
-import com.emazon.transactions.domain.spi.IArticlePersistencePort;
-import com.emazon.transactions.domain.spi.ISalePersistencePort;
-import com.emazon.transactions.domain.spi.ISecurityPersistencePort;
-import com.emazon.transactions.domain.spi.ISupplyPersistencePort;
+import com.emazon.transactions.domain.spi.*;
 import com.emazon.transactions.domain.usecase.SaleUseCase;
 import com.emazon.transactions.domain.usecase.SecurityUseCase;
 import com.emazon.transactions.domain.usecase.SupplyUseCase;
 import com.emazon.transactions.infrastructure.output.feign.adapter.ArticleFeignAdapter;
+import com.emazon.transactions.infrastructure.output.feign.adapter.CartFeignAdapter;
 import com.emazon.transactions.infrastructure.output.feign.client.ArticleFeignClient;
+import com.emazon.transactions.infrastructure.output.feign.client.CartFeignClient;
 import com.emazon.transactions.infrastructure.output.feign.mapper.UpdateQuantityFeignMapper;
 import com.emazon.transactions.infrastructure.output.jpa.adapter.SaleJpaAdapter;
 import com.emazon.transactions.infrastructure.output.jpa.adapter.SupplyJpaAdapter;
@@ -37,6 +36,7 @@ public class BeanConfiguration {
     private final ISaleItemRepository saleItemRepository;
     private final SaleEntityMapper saleEntityMapper;
 
+    private final CartFeignClient cartFeignClient;
 
     private final ArticleFeignClient articleFeignClient;
     private final UpdateQuantityFeignMapper updateQuantityFeignMapper;
@@ -57,13 +57,18 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public ICartPersistencePort cartPersistencePort(){
+        return new CartFeignAdapter(cartFeignClient);
+    }
+
+    @Bean
     public ISupplyServicePort supplyServicePort()  {
         return new SupplyUseCase(supplyPersistencePort(),articlePersistencePort());
     }
 
     @Bean
     public ISaleServicePort saleServicePort()  {
-        return new SaleUseCase(articlePersistencePort(),salePersistencePort());
+        return new SaleUseCase(articlePersistencePort(),salePersistencePort(),cartPersistencePort());
     }
 
     @Bean
