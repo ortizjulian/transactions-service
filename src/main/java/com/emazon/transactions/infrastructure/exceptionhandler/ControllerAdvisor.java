@@ -1,5 +1,6 @@
 package com.emazon.transactions.infrastructure.exceptionhandler;
 
+import com.emazon.transactions.domain.exceptions.SaleCreationException;
 import com.emazon.transactions.domain.exceptions.UnKnownNextSupplyDateException;
 import com.emazon.transactions.infrastructure.output.feign.exceptions.BadRequestException;
 import com.emazon.transactions.infrastructure.output.feign.exceptions.InternalServerErrorException;
@@ -68,4 +69,10 @@ public class ControllerAdvisor {
                 .body(Collections.singletonMap(MESSAGE,ExceptionResponse.SERVICE_UNAVAILABLE.getMessage()));
     }
 
+    @ExceptionHandler(SaleCreationException.class)
+    public ResponseEntity<Map<String, String>> handleSaleCreationException(
+            SaleCreationException saleCreationException) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Collections.singletonMap(MESSAGE,saleCreationException.getMessage()));
+    }
 }

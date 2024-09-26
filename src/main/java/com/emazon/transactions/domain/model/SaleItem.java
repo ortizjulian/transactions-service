@@ -1,12 +1,14 @@
 package com.emazon.transactions.domain.model;
 
-public class UpdateQuantity {
+public class SaleItem {
     private Long articleId;
     private Integer quantity;
+    private Double price;
 
-    public UpdateQuantity(Long articleId, Integer quantity) {
+    public SaleItem(Long articleId, Integer quantity, Double price) {
         this.articleId = articleId;
         this.quantity = quantity;
+        this.price = price;
     }
 
     public Long getArticleId() {
@@ -23,5 +25,13 @@ public class UpdateQuantity {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }
