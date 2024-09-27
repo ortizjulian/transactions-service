@@ -1,6 +1,5 @@
 package com.emazon.transactions.domain.usecase;
 
-import com.emazon.transactions.domain.exceptions.UnKnownNextSupplyDateException;
 import com.emazon.transactions.domain.model.Supply;
 import com.emazon.transactions.domain.spi.IArticlePersistencePort;
 import com.emazon.transactions.domain.spi.ISupplyPersistencePort;
@@ -18,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 
@@ -29,7 +29,6 @@ class SupplyUseCaseTest {
 
     @Mock
     private IArticlePersistencePort articlePersistencePort;
-
 
     @InjectMocks
     private SupplyUseCase supplyUseCase;
@@ -63,15 +62,15 @@ class SupplyUseCaseTest {
     }
 
     @Test
-    void SupplyUseCase_NextSupplyDate_ShouldThrowUnKnownNextSupplyDateException_WhenNoLastSupplyDateFound() {
+    void SupplyUseCase_NextSupplyDate_ShouldReturnNextMonth_WhenNoLastSupplyDateFound() {
         Long articleId = 1L;
+        LocalDateTime expectedDate = LocalDateTime.now().plusMonths(1);
         Mockito.when(supplyPersistencePort.findLastSupplyDateByArticleId(articleId))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UnKnownNextSupplyDateException.class, () -> {
-            supplyUseCase.nextSupplyDate(articleId);
-        });
+        LocalDateTime actualDate = supplyUseCase.nextSupplyDate(articleId);
 
+        assertEquals(expectedDate.truncatedTo(ChronoUnit.SECONDS), actualDate.truncatedTo(ChronoUnit.SECONDS));
         Mockito.verify(supplyPersistencePort).findLastSupplyDateByArticleId(articleId);
     }
 }

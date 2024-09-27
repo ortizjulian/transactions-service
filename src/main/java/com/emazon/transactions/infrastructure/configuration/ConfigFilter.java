@@ -26,10 +26,10 @@ public class ConfigFilter {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
-                                .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/supply/next/**").hasAuthority(SecurityConstants.ROLE_CLIENT)
                                 .requestMatchers(HttpMethod.POST,"/supply/**").hasAuthority(SecurityConstants.ROLE_WAREHOUSE_ASSISTANT)
+                                .requestMatchers("/sale/**").hasAuthority(SecurityConstants.ROLE_CLIENT)
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->

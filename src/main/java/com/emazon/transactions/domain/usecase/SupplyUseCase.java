@@ -1,9 +1,8 @@
 package com.emazon.transactions.domain.usecase;
 
 import com.emazon.transactions.domain.api.ISupplyServicePort;
-import com.emazon.transactions.domain.exceptions.UnKnownNextSupplyDateException;
+import com.emazon.transactions.domain.model.ArticleQuantity;
 import com.emazon.transactions.domain.model.Supply;
-import com.emazon.transactions.domain.model.UpdateQuantity;
 import com.emazon.transactions.domain.spi.IArticlePersistencePort;
 import com.emazon.transactions.domain.spi.ISupplyPersistencePort;
 import com.emazon.transactions.utils.Constants;
@@ -25,8 +24,8 @@ public class SupplyUseCase implements ISupplyServicePort {
     @Override
     public void addSupply(Supply supply) {
         supply.setTransactionDate(LocalDateTime.now());
-        UpdateQuantity updateQuantity = new UpdateQuantity(supply.getArticleId(),supply.getQuantity());
-        articlePersistencePort.updateArticleQuantity(updateQuantity);
+        ArticleQuantity articleQuantity = new ArticleQuantity(supply.getArticleId(),supply.getQuantity());
+        articlePersistencePort.updateArticleQuantity(articleQuantity);
         supplyPersistencePort.saveSupply(supply);
     }
 
@@ -35,7 +34,7 @@ public class SupplyUseCase implements ISupplyServicePort {
         Optional<LocalDateTime> lastSupplyDate = supplyPersistencePort.findLastSupplyDateByArticleId(articleId);
         LocalDateTime nextDate;
         if (lastSupplyDate.isEmpty()) {
-            throw new UnKnownNextSupplyDateException(Constants.EXCEPTION_NOT_KNOW_NEXT_SUPPLY + articleId);
+            return LocalDateTime.now().plusMonths(Constants.ONE_MONTH);
         }
         nextDate = lastSupplyDate.get().plusMonths(Constants.ONE_MONTH);
         return nextDate;
