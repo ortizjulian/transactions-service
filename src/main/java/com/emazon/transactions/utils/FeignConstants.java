@@ -17,6 +17,10 @@ public class FeignConstants {
     public static final String FEIGN_CART_NAME = "CART-API";
     public static final String PATH_CART_URL = "${cart.base-url}";
     public static final String PATH_DELETE_CART_BY_ID = "/cart/items/{articleId}";
+    //Report
+    public static final String FEIGN_REPORT_NAME = "REPORT-API";
+    public static final String PATH_REPORT_URL = "${report.base-url}";
+    public static final String PATH_CREATE_REPORT = "/sale";
     //Exceptions
     public static final String BAD_REQUEST = "Bad Request";
     public static final String NOT_FOUND = "Not Found";

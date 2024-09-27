@@ -38,6 +38,7 @@ public class SaleJpaAdapter implements ISalePersistencePort {
         }
 
         saleItemRepository.saveAll(saleItemEntities);
+        savedSaleEntity.setItems(saleItemEntities);
         return saleEntityMapper.toSale(savedSaleEntity);
     }
 

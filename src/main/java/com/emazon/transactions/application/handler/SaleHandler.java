@@ -6,12 +6,10 @@ import com.emazon.transactions.domain.api.ISaleServicePort;
 import com.emazon.transactions.domain.model.ArticleQuantity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class SaleHandler implements ISaleHandler {
 

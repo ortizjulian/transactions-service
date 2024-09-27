@@ -2,12 +2,10 @@ package com.emazon.transactions.domain.usecase;
 
 import com.emazon.transactions.domain.api.ISaleServicePort;
 import com.emazon.transactions.domain.exceptions.SaleCreationException;
-import com.emazon.transactions.domain.model.Article;
-import com.emazon.transactions.domain.model.ArticleQuantity;
-import com.emazon.transactions.domain.model.Sale;
-import com.emazon.transactions.domain.model.SaleItem;
+import com.emazon.transactions.domain.model.*;
 import com.emazon.transactions.domain.spi.IArticlePersistencePort;
 import com.emazon.transactions.domain.spi.ICartPersistencePort;
+import com.emazon.transactions.domain.spi.IReportPersistencePort;
 import com.emazon.transactions.domain.spi.ISalePersistencePort;
 import com.emazon.transactions.utils.Constants;
 
@@ -20,12 +18,13 @@ public class SaleUseCase implements ISaleServicePort {
     private IArticlePersistencePort articlePersistencePort;
     private ISalePersistencePort salePersistencePort;
     private ICartPersistencePort cartPersistencePort;
-    public SaleUseCase(IArticlePersistencePort articlePersistencePort, ISalePersistencePort salePersistencePort,ICartPersistencePort cartPersistencePort) {
+    private IReportPersistencePort reportPersistencePort;
+    public SaleUseCase(IArticlePersistencePort articlePersistencePort, ISalePersistencePort salePersistencePort, ICartPersistencePort cartPersistencePort, IReportPersistencePort reportPersistencePort) {
         this.articlePersistencePort = articlePersistencePort;
         this.salePersistencePort = salePersistencePort;
         this.cartPersistencePort = cartPersistencePort;
+        this.reportPersistencePort = reportPersistencePort;
     }
-
 
     @Override
     public void createSale(List<ArticleQuantity> articleQuantityList, Long userId) {
@@ -41,6 +40,8 @@ public class SaleUseCase implements ISaleServicePort {
 
             updateSaleStatus(createdSale, Constants.SALE_STATUS_COMPLETED);
             deleteArticlesFromCart(articleQuantityList);
+            SaleReport saleReport = new SaleReport(createdSale.getTotalPrice(),createdSale.getItems());
+            reportPersistencePort.saveSaleReport(saleReport);
 
         } catch (Exception e) {
             updateSaleStatus(createdSale, Constants.SALE_STATUS_FAILED);

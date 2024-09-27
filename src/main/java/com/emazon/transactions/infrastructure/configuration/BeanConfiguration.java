@@ -10,8 +10,10 @@ import com.emazon.transactions.domain.usecase.SecurityUseCase;
 import com.emazon.transactions.domain.usecase.SupplyUseCase;
 import com.emazon.transactions.infrastructure.output.feign.adapter.ArticleFeignAdapter;
 import com.emazon.transactions.infrastructure.output.feign.adapter.CartFeignAdapter;
+import com.emazon.transactions.infrastructure.output.feign.adapter.ReportFeignAdapter;
 import com.emazon.transactions.infrastructure.output.feign.client.ArticleFeignClient;
 import com.emazon.transactions.infrastructure.output.feign.client.CartFeignClient;
+import com.emazon.transactions.infrastructure.output.feign.client.ReportFeignClient;
 import com.emazon.transactions.infrastructure.output.feign.mapper.UpdateQuantityFeignMapper;
 import com.emazon.transactions.infrastructure.output.jpa.adapter.SaleJpaAdapter;
 import com.emazon.transactions.infrastructure.output.jpa.adapter.SupplyJpaAdapter;
@@ -37,6 +39,7 @@ public class BeanConfiguration {
     private final SaleEntityMapper saleEntityMapper;
 
     private final CartFeignClient cartFeignClient;
+    private final ReportFeignClient reportFeignClient;
 
     private final ArticleFeignClient articleFeignClient;
     private final UpdateQuantityFeignMapper updateQuantityFeignMapper;
@@ -62,13 +65,18 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public IReportPersistencePort reportPersistencePort(){
+        return new ReportFeignAdapter(reportFeignClient);
+    }
+
+    @Bean
     public ISupplyServicePort supplyServicePort()  {
         return new SupplyUseCase(supplyPersistencePort(),articlePersistencePort());
     }
 
     @Bean
     public ISaleServicePort saleServicePort()  {
-        return new SaleUseCase(articlePersistencePort(),salePersistencePort(),cartPersistencePort());
+        return new SaleUseCase(articlePersistencePort(),salePersistencePort(),cartPersistencePort(),reportPersistencePort());
     }
 
     @Bean
